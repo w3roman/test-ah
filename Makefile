@@ -51,6 +51,9 @@ rebuild-nginx:
 	docker compose stop nginx
 	docker compose up -d --build --remove-orphans
 
+db-migrate:
+	docker compose exec mariadb sh -c 'pv migrations/schema.sql | mariadb -p"$$MARIADB_ROOT_PASSWORD" database'
+
 db-export-gz:
 	docker compose exec mariadb sh -c 'su dockerUser -c "mariadb-dump -u root -p\"$$MARIADB_ROOT_PASSWORD\" database | gzip > database.sql.gz"'
 
