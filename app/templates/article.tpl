@@ -8,7 +8,7 @@
             {$article.published_at|date_format:'%d.%m.%Y'} · {$article.views} просмотров
         </div>
         {if $article.image}
-            <img class="article-image" src="{$app_url}/uploads/{$article.image}" alt="">
+            <img class="article-image" src="{$article.image}" alt="">
         {/if}
         <p class="lead">{$article.short_description|escape}</p>
         <div class="content">{$article.content nofilter}</div>

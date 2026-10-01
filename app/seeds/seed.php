@@ -47,7 +47,7 @@ $insLink = $pdo->prepare(
 $now = time();
 foreach ($articles as $i => [$title, $slug, $short, $content, $cats, $views]) {
     $insArticle->execute([
-        $title, $slug, null, $short, $content, $views,
+        $title, $slug, 'https://dummyimage.com/600x400/000/fff', $short, $content, $views,
         date('Y-m-d H:i:s', $now - $i * 86400),
     ]);
     $aid = (int)$pdo->lastInsertId();
