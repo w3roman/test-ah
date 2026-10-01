@@ -5,7 +5,8 @@ start: \
 	down \
 	git-pull \
 	generate-certs \
-	up
+	up \
+	create-database-if-not-exists
 s: start
 
 down:
@@ -26,6 +27,9 @@ up:
 	docker compose up -d --build --remove-orphans
 
 restart: down up
+
+create-database-if-not-exists:
+	docker compose exec mariadb sh -c 'su dockerUser -c "mariadb -u root -p\"$$MARIADB_ROOT_PASSWORD\" -e \"CREATE DATABASE IF NOT EXISTS database CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\""'
 
 sh:
 	docker compose exec php-fpm sh
