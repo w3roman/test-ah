@@ -7,6 +7,7 @@ start: \
 	generate-certs \
 	up \
 	create-database-if-not-exists \
+	db-migrate \
 	composer-i
 s: start
 
