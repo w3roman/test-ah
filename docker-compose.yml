@@ -1,0 +1,75 @@
+services:
+
+  mariadb:
+    build: ./.docker/mariadb
+    image: ${PROJECT_NAME}-mariadb
+    container_name: ${PROJECT_NAME}-mariadb
+    env_file:
+      - ./.env
+    ports:
+      - ${_MARIADB_HOST_PORT}:${DB_PORT}
+    volumes:
+      - ./.docker/.mariadb:/var/lib/mysql
+      - ./app:/app
+    healthcheck:
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    working_dir: /app
+    restart: always
+
+  php-fpm:
+    build: ./.docker/php/fpm
+    image: ${PROJECT_NAME}-php-fpm
+    container_name: ${PROJECT_NAME}-php-fpm
+    env_file:
+      - ./.env
+    volumes:
+      - ./.docker/php/fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./.docker/php/fpm/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./app:/app
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    extra_hosts:
+      - host.docker.internal:host-gateway # For `xdebug.client_host=host.docker.internal`, `tor`, etc.
+    working_dir: /app
+    user: 1000:1000
+    restart: always
+
+  cron:
+    pull_policy: never
+    image: ${PROJECT_NAME}-php-fpm
+    container_name: ${PROJECT_NAME}-cron
+    env_file:
+      - ./.env
+    volumes:
+      - ./app:/app
+    depends_on:
+      - php-fpm
+    user: root
+    command: ['crond', '-f']
+    restart: always
+
+  nginx:
+    build: ./.docker/nginx
+    image: ${PROJECT_NAME}-nginx
+    container_name: ${PROJECT_NAME}-nginx
+    env_file:
+      - ./.env
+    ports: # 127.0.0.1 is required to prevent access from the internet in a production environment
+      - 127.0.0.1:${_NGINX_PORT}:80
+      - 127.0.0.1:${_NGINX_PORT_HTTPS}:443
+    volumes:
+      - ./.docker/certs:/etc/nginx/certs:ro
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./app:/app
+    depends_on:
+      - php-fpm
+    restart: always
+
+networks:
+  default:
+    name: ${PROJECT_NAME}-default
