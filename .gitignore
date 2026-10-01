@@ -1,5 +1,6 @@
 /.idea
 /.docker/.mariadb
 /app/database.*
+/app/var
 /app/vendor
 /.env
