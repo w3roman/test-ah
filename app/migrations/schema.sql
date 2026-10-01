@@ -1,4 +1,4 @@
-CREATE TABLE categories
+CREATE TABLE IF NOT EXISTS categories
 (
     id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title       VARCHAR(255) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE categories
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE articles
+CREATE TABLE IF NOT EXISTS articles
 (
     id                INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title             VARCHAR(255) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE articles
   DEFAULT CHARSET = utf8mb4;
 
 -- many-to-many
-CREATE TABLE article_category
+CREATE TABLE IF NOT EXISTS article_category
 (
     article_id  INT UNSIGNED NOT NULL,
     category_id INT UNSIGNED NOT NULL,
