@@ -67,17 +67,18 @@ final class ArticleRepository
     public function similar(int $articleId, int $limit = 3): array
     {
         $sql = 'SELECT DISTINCT a.*
-                FROM articles a
-                JOIN article_category ac ON ac.article_id = a.id
-                WHERE ac.category_id IN (
-                    SELECT category_id FROM article_category WHERE article_id = :aid
-                )
-                AND a.id != :aid
-                ORDER BY a.published_at DESC
-                LIMIT :lim';
+            FROM articles a
+            JOIN article_category ac ON ac.article_id = a.id
+            WHERE ac.category_id IN (
+                SELECT category_id FROM article_category WHERE article_id = :aid_sub
+            )
+            AND a.id != :aid_main
+            ORDER BY a.published_at DESC
+            LIMIT :lim';
         $stmt = Database::pdo()->prepare($sql);
-        $stmt->bindValue('aid', $articleId, PDO::PARAM_INT);
-        $stmt->bindValue('lim', $limit, PDO::PARAM_INT);
+        $stmt->bindValue('aid_sub',  $articleId, PDO::PARAM_INT);
+        $stmt->bindValue('aid_main', $articleId, PDO::PARAM_INT);
+        $stmt->bindValue('lim',      $limit,     PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
     }
