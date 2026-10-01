@@ -1,11 +1,11 @@
 <?php
 return [
     'db' => [
-        'host' => getenv('DB_HOST') ?: 'mariadb',
-        'port' => getenv('DB_PORT') ?: '3306',
-        'name' => getenv('DB_NAME') ?: 'blog',
-        'user' => getenv('DB_USER') ?: 'blog',
-        'pass' => getenv('DB_PASSWORD') ?: 'secret',
+        'host' => getenv('DB_HOST'),
+        'port' => getenv('DB_PORT'),
+        'name' => getenv('DB_NAME'),
+        'user' => getenv('DB_USER'),
+        'pass' => getenv('DB_PASSWORD'),
     ],
     'templates_dir' => __DIR__ . '/../templates',
     'compile_dir'   => __DIR__ . '/../var/smarty/compile',
