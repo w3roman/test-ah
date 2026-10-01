@@ -64,6 +64,9 @@ rebuild-nginx:
 db-migrate:
 	docker compose exec mariadb sh -c 'pv migrations/schema.sql | mariadb -p"$$MARIADB_ROOT_PASSWORD" database'
 
+db-seed:
+	docker compose exec php-fpm php /app/seeds/seed.php
+
 db-export-gz:
 	docker compose exec mariadb sh -c 'su dockerUser -c "mariadb-dump -u root -p\"$$MARIADB_ROOT_PASSWORD\" database | gzip > database.sql.gz"'
 
